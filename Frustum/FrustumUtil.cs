@@ -15,19 +15,19 @@ namespace Systems.Utilities.Frustum
         ///     Build a plane from 3 points (counter-clockwise order).
         ///     Returned as float4(normal.xyz, distance).
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static float4 CreatePlane(float3 a, float3 b, float3 c)
+        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static void CreatePlane(in float3 a, in float3 b, in float3 c, out float4 plane)
         {
             float3 normal = math.normalize(math.cross(b - a, c - a));
             float distance = -math.dot(normal, a);
-            return new float4(normal, distance);
+            plane = new float4(normal, distance);
         }
 
         /// <summary>
         ///     Check if a point is inside plane.
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static bool IsInside(float3 point, in float4 plane)
+        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static bool IsInside(in float3 point, in float4 plane)
         {
             return math.dot(plane.xyz, point) + plane.w >= 0f;
         }
@@ -37,8 +37,8 @@ namespace Systems.Utilities.Frustum
         /// </summary>
         [BurstCompile]
         public static void ExtractFrustumPlanes(
-            float3 camPos,
-            quaternion camRot,
+            in float3 camPos,
+            in quaternion camRot,
             float verticalSize,
             float aspect,
             float near,
@@ -78,12 +78,12 @@ namespace Systems.Utilities.Frustum
             float3 fbr = farCenter - up * halfFarHeight + rightV * halfFarWidth;
 
             // Planes
-            left   = CreatePlane(camPos, nbl, fbl);
-            right  = CreatePlane(camPos, fbr, nbr);
-            top    = CreatePlane(camPos, ntr, ftr);
-            bottom = CreatePlane(camPos, fbl, nbl);
-            nearP  = CreatePlane(nbl, ntr, ntl);
-            farP   = CreatePlane(ftr, fbr, ftl);
+            CreatePlane(camPos, nbl, fbl, out left);
+            CreatePlane(camPos, fbr, nbr, out right);
+            CreatePlane(camPos, ntr, ftr, out top);
+            CreatePlane(camPos, fbl, nbl, out bottom);
+            CreatePlane(nbl, ntr, ntl, out nearP);
+            CreatePlane(ftr, fbr, ftl, out farP);
         }
 
         /// <summary>
@@ -139,11 +139,11 @@ namespace Systems.Utilities.Frustum
         }
         
         /// <summary>
-        ///     Check if a point is inside frustum.
+        ///     Check if a point is inside frustum. 
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool PointInFrustum(
-            float3 point,
+            in float3 point,
             in float4 left,
             in float4 right,
             in float4 top,

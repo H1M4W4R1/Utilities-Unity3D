@@ -3,6 +3,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using Systems.Utilities.Identifiers.Abstract;
 using Unity.Burst;
+using Unity.Burst.CompilerServices;
 using Unity.Mathematics;
 
 namespace Systems.Utilities.Identifiers
@@ -70,6 +71,9 @@ namespace Systems.Utilities.Identifiers
         [BurstCompile] 
         public int CompareTo(SnowflakeIdentifier other)
         {
+            // Check, if should be early
+            if (Hint.Unlikely(isCreated && !other.isCreated)) return -1;
+            
             if (Equals(other)) return 0;
 
             if (ticks < other.ticks) return -1;

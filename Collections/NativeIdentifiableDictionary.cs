@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Collections.LowLevel.Unsafe;
@@ -25,7 +26,12 @@ namespace Systems.Utilities.Collections
 
         public bool IsReadOnly => false;
 
-        public int Count => math.min(_keys.Length, _values.Length);
+        public int Count
+        {
+            [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)] get
+                => math.min(_keys.Length, _values.Length);
+        }
+
 
         public ICollection<TIdentifier> Keys => throw new NotSupportedException();
         public ICollection<TObject> Values => throw new NotSupportedException();
@@ -36,18 +42,20 @@ namespace Systems.Utilities.Collections
             _values = new UnsafeList<TObject>(64, allocator);
         }
 
-        public void Dispose()
+        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)] public void Dispose()
         {
             _keys.Dispose();
             _values.Dispose();
         }
 
+        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public JobHandle Dispose(JobHandle inputDeps)
         {
             Dispose();
             return inputDeps;
         }
 
+        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public IEnumerator<KeyValuePair<TIdentifier, TObject>> GetEnumerator()
         {
             Assert.AreEqual(_keys.Length, _values.Length);
@@ -57,21 +65,22 @@ namespace Systems.Utilities.Collections
             }
         }
 
-        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)] IEnumerator IEnumerable.GetEnumerator()
+            => GetEnumerator();
 
 
 #region IDictionary<K,V> — implemented
 
-        public void Add(KeyValuePair<TIdentifier, TObject> item) => Add(item.Key, item.Value);
+        [BurstDiscard] public void Add(KeyValuePair<TIdentifier, TObject> item) => Add(item.Key, item.Value);
 
-        public bool Contains(KeyValuePair<TIdentifier, TObject> item)
+        [BurstDiscard] public bool Contains(KeyValuePair<TIdentifier, TObject> item)
         {
             int idx = BinarySearch(item.Key);
             if (idx < 0) return false;
             return EqualityComparer<TObject>.Default.Equals(_values[idx], item.Value);
         }
 
-        public void CopyTo(KeyValuePair<TIdentifier, TObject>[] array, int arrayIndex)
+        [BurstDiscard] public void CopyTo(KeyValuePair<TIdentifier, TObject>[] array, int arrayIndex)
         {
             if (array == null) throw new ArgumentNullException(nameof(array));
             if ((uint) arrayIndex > (uint) array.Length) throw new ArgumentOutOfRangeException(nameof(arrayIndex));
@@ -81,7 +90,7 @@ namespace Systems.Utilities.Collections
                 array[arrayIndex + i] = new KeyValuePair<TIdentifier, TObject>(_keys[i], _values[i]);
         }
 
-        public bool Remove(KeyValuePair<TIdentifier, TObject> item)
+        [BurstDiscard] public bool Remove(KeyValuePair<TIdentifier, TObject> item)
         {
             int idx = BinarySearch(item.Key);
             if (idx < 0) return false;
@@ -91,10 +100,10 @@ namespace Systems.Utilities.Collections
             return true;
         }
 
-        public void Add(TIdentifier key, TObject value)
+        [BurstCompile] public void Add(TIdentifier key, TObject value)
         {
             int idx = BinarySearch(key);
-            if (idx >= 0) throw new ArgumentException("An element with the same key already exists.", nameof(key));
+            if (idx >= 0) return;
 
             int insertIndex = ~idx;
             InsertAtOrdered(insertIndex, key, value);
@@ -102,7 +111,7 @@ namespace Systems.Utilities.Collections
 
         public bool ContainsKey(TIdentifier key) => BinarySearch(key) >= 0;
 
-        public bool Remove(TIdentifier key)
+        [BurstCompile] public bool Remove(TIdentifier key)
         {
             int idx = BinarySearch(key);
             if (idx < 0) return false;
@@ -110,7 +119,7 @@ namespace Systems.Utilities.Collections
             return true;
         }
 
-        public bool TryGetValue(TIdentifier key, out TObject value)
+        [BurstCompile] public bool TryGetValue(TIdentifier key, out TObject value)
         {
             int idx = BinarySearch(key);
             if (idx >= 0)
@@ -125,13 +134,14 @@ namespace Systems.Utilities.Collections
 
         public TObject this[TIdentifier key]
         {
-            get
+            [BurstCompile] get
             {
                 int idx = BinarySearch(key);
-                if (idx < 0) throw new KeyNotFoundException("The given key was not present in the dictionary.");
+                if (idx < 0) return default;
                 return _values[idx];
             }
-            set
+
+            [BurstCompile] set
             {
                 int idx = BinarySearch(key);
                 if (idx >= 0)
@@ -145,7 +155,7 @@ namespace Systems.Utilities.Collections
             }
         }
 
-        public void Clear()
+        [BurstCompile] public void Clear()
         {
             _keys.Clear();
             _values.Clear();
@@ -169,8 +179,7 @@ namespace Systems.Utilities.Collections
 
                 // Rely on user-provided operators for TIdentifier
                 int cmp = midKey.CompareTo(key);
-                if (cmp == 0) 
-                    return mid;
+                if (cmp == 0) return mid;
 
                 if (cmp < 0)
                     lo = mid + 1;
