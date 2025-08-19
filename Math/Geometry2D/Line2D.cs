@@ -8,16 +8,31 @@ using Unity.Mathematics;
 namespace Systems.Utilities.Math.Geometry2D
 {
     /// <summary>
-    ///     Line in 3D space
+    ///     Line in 2D space
     /// </summary>
     [BurstCompile] [StructLayout(LayoutKind.Explicit)]
     public readonly struct Line2D : IUnmanaged<Line2D>, IEquatable<Line2D>
     {
+        /// <summary>
+        ///     Vectorized data
+        /// </summary>
         [FieldOffset(0)] private readonly int4 vectorized;
 
+        /// <summary>
+        ///     Start point of the line
+        /// </summary>
         [FieldOffset(0)] public readonly float2 start;
+        
+        /// <summary>
+        ///     End point of the line
+        /// </summary>
         [FieldOffset(12)] public readonly float2 end;
 
+        /// <summary>
+        ///     Constructs a new line segment from the given start and end points.
+        /// </summary>
+        /// <param name="start">Start point of the line segment.</param>
+        /// <param name="end">End point of the line segment.</param>
         public Line2D(in float2 start, in float2 end)
         {
             vectorized = int4.zero;
@@ -25,6 +40,11 @@ namespace Systems.Utilities.Math.Geometry2D
             this.end = end;
         }
         
+        /// <summary>
+        ///     Finds the closest point to the given target point on the line segment.
+        /// </summary>
+        /// <param name="target">Target point to find the closest point from.</param>
+        /// <returns>Closest point on the line to the target.</returns>
         [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly float2 GetClosestPointToPoint(in float2 target)
         {
@@ -34,6 +54,11 @@ namespace Systems.Utilities.Math.Geometry2D
             return start + lineDirection * distance;
         }
 
+        /// <summary>
+        ///     Computes the symmetric point to the given point relative to this line.
+        /// </summary>
+        /// <param name="point">Point to compute the symmetric point of.</param>
+        /// <returns>Symmetric point to the given point relative to this line.</returns>
         [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly float2 GetSymmetricPoint(in float2 point)
         {
@@ -42,9 +67,23 @@ namespace Systems.Utilities.Math.Geometry2D
             return pointOnLine - vectorToPoint;
         }
 
+        /// <summary>
+        ///     Computes whether this line crosses the given <paramref name="otherLine"/>.
+        /// </summary>
+        /// <param name="otherLine">Line to check for intersection with.</param>
+        /// <returns><see langword="true"/> if the two lines intersect, <see langword="false"/> otherwise.</returns>
         [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly bool CrossesLine(in Line2D otherLine) => !otherLine.ArePointsOnSameSide(start, end);
 
+        
+        /// <summary>
+        ///     Checks whether two points are on the same side of this line.
+        /// </summary>
+        /// <param name="a">First point to check.</param>
+        /// <param name="b">Second point to check.</param>
+        /// <returns>
+        ///     <see langword="true"/> if both points are on the same side of this line, <see langword="false"/> otherwise.
+        /// </returns>
         [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly bool ArePointsOnSameSide(in float2 a, in float2 b)
         {
@@ -53,12 +92,20 @@ namespace Systems.Utilities.Math.Geometry2D
             return math.dot(normal, a - start) * math.dot(normal, b - start) > 0;
         }
 
+        /// <summary>
+        ///     Computes the length of the line segment.
+        /// </summary>
+        /// <returns>Length of the line segment.</returns>
         [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)] public readonly float Length()
             => math.distance(start, end);
 
+        /// <summary>
+        ///     Computes the length of the line segment squared.
+        /// </summary>
+        /// <returns>Length of the line segment squared.</returns>
         [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)] public readonly float LengthSq()
             => math.distancesq(start, end);
-
+      
 
 #region IEquatable<Line3D> - implemented
 

@@ -19,23 +19,50 @@ namespace Systems.Utilities.Identifiers
         /// </summary>
         private static int _snowflakeShiftCounter;
 
+        /// <summary>
+        ///     Vectorized data
+        /// </summary>
         [FieldOffset(0)] public readonly int4 vectorized;
 
+        /// <summary>
+        ///     Ticks since Unix epoch
+        /// </summary>
         [FieldOffset(0)] public readonly long ticks;
+
+        /// <summary>
+        ///     Shift counter to prevent duplication of IDs created at same time
+        /// </summary>
         [FieldOffset(8)] public readonly long shift;
-        
+
+        /// <summary>
+        ///     Check if identifier is created (ticks is not zero)
+        /// </summary>
         public bool IsCreated
         {
-            [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => ticks != 0;
+            [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)] get => ticks != 0;
         }
 
+        /// <summary>
+        ///     Constructor for SnowflakeIdentifier.
+        /// </summary>
+        /// <param name="ticks">Ticks since Unix epoch</param>
+        /// <param name="shift">Shift counter to prevent duplication of IDs created at same time</param>
         public SnowflakeIdentifier(long ticks, long shift)
         {
             vectorized = int4.zero;
             this.ticks = ticks;
             this.shift = shift;
         }
+
+        /// <summary>
+        ///     Generates a new SnowflakeIdentifier with current ticks and an incremented shift counter.
+        ///     Not compatible with Burst compilation.
+        /// </summary>
+        /// <returns>A new SnowflakeIdentifier</returns>
+        [BurstDiscard] public static SnowflakeIdentifier New()
+            => new(DateTime.UtcNow.Ticks, _snowflakeShiftCounter++);
+
+#region IEquatable<SnowflakeIdentifier> - implemented
 
         [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Equals(SnowflakeIdentifier other) => vectorized.Equals(other.vectorized);
@@ -56,33 +83,28 @@ namespace Systems.Utilities.Identifiers
         [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(SnowflakeIdentifier left, SnowflakeIdentifier right) => !left.Equals(right);
 
-        /// <summary>
-        ///     Create new instance of SnowflakeIdentifier
-        /// </summary>
-        /// <remarks>
-        ///     Available only in Mono, not burstable due to usage of <see cref="DateTime.UtcNow"/>
-        /// </remarks>
-        [BurstDiscard] public static SnowflakeIdentifier New()
-            => new(DateTime.UtcNow.Ticks, _snowflakeShiftCounter++);
-        
-        // IComparable implementation (using operators you defined)
-        [BurstCompile] 
-        public int CompareTo(SnowflakeIdentifier other)
+#endregion
+
+#region IComparable<SnowflakeIdentifier> - implemented
+
+        [BurstCompile] public int CompareTo(SnowflakeIdentifier other)
         {
             // Compute proper shifting techniques
             // This stack will be most likely compiler-optimized
             if (Hint.Unlikely(IsCreated && !other.IsCreated)) return -1;
             if (Hint.Unlikely(!IsCreated && other.IsCreated)) return 1;
             if (Hint.Unlikely(!IsCreated && !other.IsCreated)) return 0;
-            
+
             if (Equals(other)) return 0;
 
             if (ticks < other.ticks) return -1;
             if (ticks > other.ticks) return 1;
             if (shift < other.shift) return -1;
             if (shift > other.shift) return 1;
-            
+
             return 0; // Weird shit, consider equal
         }
+
+#endregion
     }
 }

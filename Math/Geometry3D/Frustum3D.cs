@@ -9,6 +9,11 @@ using UnityEngine;
 
 namespace Systems.Utilities.Math.Geometry3D
 {
+    /// <summary>
+    ///     Struct that represents a 3D frustum.
+    ///     A frustum is defined by six planes: left, right, up, down, far, and near.
+    ///     Each plane is defined as a normal vector and a distance from the origin.
+    /// </summary>
     [BurstCompile] [StructLayout(LayoutKind.Explicit)]
     public readonly unsafe struct Frustum3D : IUnmanaged<Frustum3D>
     {
@@ -19,12 +24,23 @@ namespace Systems.Utilities.Math.Geometry3D
         [FieldOffset(64)] private readonly Plane3D _far;
         [FieldOffset(80)] private readonly Plane3D _near;
 
-       
+
+        /// <summary>
+        ///     Creates a frustum from a camera object.
+        /// 
+        ///     The frustum is defined by six planes: left, right, up, down, far, and near.
+        ///     Each plane is defined as a normal vector and a distance from the origin.
+        ///     The normal vector points away from the frustum, and the distance is the
+        ///     distance from the origin to the plane.
+        /// 
+        ///     The planes are normalized to ensure consistent distances.     
+        /// </summary>
+        /// <param name="cameraObject">The camera object to create the frustum from.</param>
         public Frustum3D([NotNull] Camera cameraObject)
         {
             Matrix4x4 projectionMatrix = cameraObject.projectionMatrix;
             Matrix4x4 viewMatrix = cameraObject.worldToCameraMatrix;
-         
+
             Matrix4x4 mat = projectionMatrix * viewMatrix;
 
             _left = new Plane3D(mat.m30 + mat.m00, mat.m31 + mat.m01, mat.m32 + mat.m02, mat.m33 + mat.m03);
@@ -33,7 +49,7 @@ namespace Systems.Utilities.Math.Geometry3D
             _up = new Plane3D(mat.m30 - mat.m10, mat.m31 - mat.m11, mat.m32 - mat.m12, mat.m33 - mat.m13);
             _near = new Plane3D(mat.m30 + mat.m20, mat.m31 + mat.m21, mat.m32 + mat.m22, mat.m33 + mat.m23);
             _far = new Plane3D(mat.m30 - mat.m20, mat.m31 - mat.m21, mat.m32 - mat.m22, mat.m33 - mat.m23);
-            
+
             // Normalize planes (optional, for consistent distances)
             fixed (Plane3D* planes = &_left)
             {
@@ -43,10 +59,20 @@ namespace Systems.Utilities.Math.Geometry3D
                     float length = math.length(normal);
                     planes[i].normal /= length;
                     planes[i].distance /= length;
-                }    
+                }
             }
         }
 
+
+        /// <summary>
+        ///     Creates a frustum from camera-like parameters.
+        /// </summary>
+        /// <param name="camPos">The camera position.</param>
+        /// <param name="camRot">The camera rotation.</param>
+        /// <param name="verticalSize">The vertical size of the frustum (far plane).</param>
+        /// <param name="aspect">The aspect ratio of the frustum.</param>
+        /// <param name="near">The near plane distance.</param>
+        /// <param name="far">The far plane distance.</param>
         public Frustum3D(
             in float3 camPos,
             in quaternion camRot,
@@ -55,12 +81,12 @@ namespace Systems.Utilities.Math.Geometry3D
             float near,
             float far)
         {
-            // Basis vectors
+            // Build 3D basis from rotation
             float3 forward = math.mul(camRot, new float3(0, 0, 1));
             float3 up = math.mul(camRot, new float3(0, 1, 0));
             float3 rightV = math.mul(camRot, new float3(1, 0, 0));
 
-            // Near/Far centers
+            // Centers
             float3 nearCenter = camPos + forward * near;
             float3 farCenter = camPos + forward * far;
 
@@ -89,7 +115,7 @@ namespace Systems.Utilities.Math.Geometry3D
             _down = new Plane3D(camPos, fbl, nbl);
             _near = new Plane3D(nbl, ntr, ntl);
             _far = new Plane3D(ftr, fbr, ftl);
-            
+
             // Normalize planes (optional, for consistent distances)
             fixed (Plane3D* planes = &_left)
             {
@@ -99,10 +125,16 @@ namespace Systems.Utilities.Math.Geometry3D
                     float length = math.length(normal);
                     planes[i].normal /= length;
                     planes[i].distance /= length;
-                }    
+                }
             }
         }
 
+
+        /// <summary>
+        ///     Checks if a point is inside the frustum.
+        /// </summary>
+        /// <param name="point">The point to check.</param>
+        /// <returns>True if the point is inside, false otherwise.</returns>
         [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool ContainsPoint(in float3 point)
         {
@@ -113,22 +145,23 @@ namespace Systems.Utilities.Math.Geometry3D
                 {
                     Plane3D plane = planes[i];
                     if (!plane.IsOnPositiveSide(point)) return false;
-                }    
+                }
             }
 
             return true;
         }
-        
+
         /// <summary>
-        ///     Computes gizmo lines for drawing
+        ///     Computes the frustum's bounding lines.
         /// </summary>
         /// <param name="lines">Lines array, you have to dispose it manually</param>
         /// <param name="linesAllocator">Allocator used to create output array</param>
-        [BurstCompile]
-        public void ComputeGizmoLines(out NativeArray<Line3D> lines, Allocator linesAllocator = Allocator.TempJob)
+        [BurstCompile] public void ComputeGizmoLines(
+            out NativeArray<Line3D> lines,
+            Allocator linesAllocator = Allocator.TempJob)
         {
             lines = new NativeArray<Line3D>(12, linesAllocator);
-            
+
             // Compute corners
             Plane3D.IntersectPlanes(_near, _up, _left, out float3 ntl);
             Plane3D.IntersectPlanes(_near, _up, _right, out float3 ntr);
@@ -139,7 +172,7 @@ namespace Systems.Utilities.Math.Geometry3D
             Plane3D.IntersectPlanes(_far, _up, _right, out float3 ftr);
             Plane3D.IntersectPlanes(_far, _down, _left, out float3 fbl);
             Plane3D.IntersectPlanes(_far, _down, _right, out float3 fbr);
-            
+
             // Near plane
             lines[0] = new Line3D(ntl, ntr);
             lines[1] = new Line3D(ntr, nbr);
