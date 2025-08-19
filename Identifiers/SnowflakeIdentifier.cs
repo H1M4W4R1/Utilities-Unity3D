@@ -22,21 +22,19 @@ namespace Systems.Utilities.Identifiers
         [FieldOffset(0)] public readonly int4 vectorized;
 
         [FieldOffset(0)] public readonly long ticks;
-        [FieldOffset(8)] public readonly int shift;
-        [FieldOffset(12)] public readonly short reserved0;
-        [FieldOffset(14)] public readonly byte reserved1;
+        [FieldOffset(8)] public readonly long shift;
         
-        [MarshalAs(UnmanagedType.U1)]
-        [FieldOffset(15)] public readonly bool isCreated;
+        public bool IsCreated
+        {
+            [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => ticks != 0;
+        }
 
-        public SnowflakeIdentifier(long ticks, int shift)
+        public SnowflakeIdentifier(long ticks, long shift)
         {
             vectorized = int4.zero;
             this.ticks = ticks;
             this.shift = shift;
-            reserved0 = 0;
-            reserved1 = 0;
-            isCreated = true;
         }
 
         [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -45,7 +43,7 @@ namespace Systems.Utilities.Identifiers
         [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)] public override bool Equals(object obj)
         {
             if (obj is SnowflakeIdentifier other) return Equals(other);
-            if (obj is null) return !isCreated;
+            if (obj is null) return !IsCreated;
             return false;
         }
 
@@ -71,8 +69,11 @@ namespace Systems.Utilities.Identifiers
         [BurstCompile] 
         public int CompareTo(SnowflakeIdentifier other)
         {
-            // Check, if should be early
-            if (Hint.Unlikely(isCreated && !other.isCreated)) return -1;
+            // Compute proper shifting techniques
+            // This stack will be most likely compiler-optimized
+            if (Hint.Unlikely(IsCreated && !other.IsCreated)) return -1;
+            if (Hint.Unlikely(!IsCreated && other.IsCreated)) return 1;
+            if (Hint.Unlikely(!IsCreated && !other.IsCreated)) return 0;
             
             if (Equals(other)) return 0;
 
