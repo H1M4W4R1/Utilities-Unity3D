@@ -157,10 +157,10 @@ namespace Systems.Utilities.Math.Geometry3D
         /// <param name="lines">Lines array, you have to dispose it manually</param>
         /// <param name="linesAllocator">Allocator used to create output array</param>
         [BurstCompile] public void ComputeGizmoLines(
-            out NativeArray<Line3D> lines,
+            out NativeArray<Segment3D> lines,
             Allocator linesAllocator = Allocator.TempJob)
         {
-            lines = new NativeArray<Line3D>(12, linesAllocator);
+            lines = new NativeArray<Segment3D>(12, linesAllocator);
 
             // Compute corners
             Plane3D.IntersectPlanes(_near, _up, _left, out float3 ntl);
@@ -174,22 +174,22 @@ namespace Systems.Utilities.Math.Geometry3D
             Plane3D.IntersectPlanes(_far, _down, _right, out float3 fbr);
 
             // Near plane
-            lines[0] = new Line3D(ntl, ntr);
-            lines[1] = new Line3D(ntr, nbr);
-            lines[2] = new Line3D(nbr, nbl);
-            lines[3] = new Line3D(nbl, ntl);
+            lines[0] = new Segment3D(ntl, ntr);
+            lines[1] = new Segment3D(ntr, nbr);
+            lines[2] = new Segment3D(nbr, nbl);
+            lines[3] = new Segment3D(nbl, ntl);
 
             // Far plane
-            lines[4] = new Line3D(ftl, ftr);
-            lines[5] = new Line3D(ftr, fbr);
-            lines[6] = new Line3D(fbr, fbl);
-            lines[7] = new Line3D(fbl, ftl);
+            lines[4] = new Segment3D(ftl, ftr);
+            lines[5] = new Segment3D(ftr, fbr);
+            lines[6] = new Segment3D(fbr, fbl);
+            lines[7] = new Segment3D(fbl, ftl);
 
             // Edges
-            lines[8] = new Line3D(ntl, ftl);
-            lines[9] = new Line3D(ntr, ftr);
-            lines[10] = new Line3D(nbl, fbl);
-            lines[11] = new Line3D(nbr, fbr);
+            lines[8] = new Segment3D(ntl, ftl);
+            lines[9] = new Segment3D(ntr, ftr);
+            lines[10] = new Segment3D(nbl, fbl);
+            lines[11] = new Segment3D(nbr, fbr);
         }
     }
 }

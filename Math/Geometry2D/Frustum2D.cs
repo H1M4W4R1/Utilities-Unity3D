@@ -14,10 +14,10 @@ namespace Systems.Utilities.Math.Geometry2D
     {
         // Four boundary lines of the 2D frustum (convex trapezoid): left, right, far, near
         // Note: Line2D uses explicit layout internally; here we conservatively space fields.
-        [FieldOffset(0)] private readonly Line2D _left;
-        [FieldOffset(24)] private readonly Line2D _right;
-        [FieldOffset(48)] private readonly Line2D _far;
-        [FieldOffset(72)] private readonly Line2D _near;
+        [FieldOffset(0)] private readonly Segment2D _left;
+        [FieldOffset(24)] private readonly Segment2D _right;
+        [FieldOffset(48)] private readonly Segment2D _far;
+        [FieldOffset(72)] private readonly Segment2D _near;
 
         /// <summary>
         ///     Constructs a 2D frustum (trapezoid) from camera-like parameters.
@@ -52,10 +52,10 @@ namespace Systems.Utilities.Math.Geometry2D
             float2 fr = farCenter + rightV * halfFarWidth;
 
             // Lines (orientation does not affect ContainsPoint since we use explicit inward normals)
-            _left = new Line2D(nl, fl);
-            _right = new Line2D(fr, nr);
-            _near = new Line2D(nl, nr);
-            _far = new Line2D(fr, fl);
+            _left = new Segment2D(nl, fl);
+            _right = new Segment2D(fr, nr);
+            _near = new Segment2D(nl, nr);
+            _far = new Segment2D(fr, fl);
         }
 
         [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -90,9 +90,9 @@ namespace Systems.Utilities.Math.Geometry2D
         ///     Computes gizmo lines for drawing the trapezoid outline.
         /// </summary>
         [BurstCompile]
-        public void ComputeGizmoLines(out NativeArray<Line2D> lines, Allocator linesAllocator = Allocator.TempJob)
+        public void ComputeGizmoLines(out NativeArray<Segment2D> lines, Allocator linesAllocator = Allocator.TempJob)
         {
-            lines = new NativeArray<Line2D>(4, linesAllocator);
+            lines = new NativeArray<Segment2D>(4, linesAllocator);
 
             // Intersections (corners) from existing boundary endpoints
             // Left boundary (_left): nl -> fl, Right boundary (_right): fr -> nr
@@ -102,10 +102,10 @@ namespace Systems.Utilities.Math.Geometry2D
             float2 nr = _right.end;    // near-right
 
             // Edges ordered: near, right, far, left
-            lines[0] = new Line2D(nl, nr); // near edge
-            lines[1] = new Line2D(nr, fr); // right edge
-            lines[2] = new Line2D(fr, fl); // far edge
-            lines[3] = new Line2D(fl, nl); // left edge
+            lines[0] = new Segment2D(nl, nr); // near edge
+            lines[1] = new Segment2D(nr, fr); // right edge
+            lines[2] = new Segment2D(fr, fl); // far edge
+            lines[3] = new Segment2D(fl, nl); // left edge
         }
     }
 }
