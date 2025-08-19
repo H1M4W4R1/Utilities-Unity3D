@@ -49,18 +49,6 @@ namespace Systems.Utilities.Math.Geometry3D
             _up = new Plane3D(mat.m30 - mat.m10, mat.m31 - mat.m11, mat.m32 - mat.m12, mat.m33 - mat.m13);
             _near = new Plane3D(mat.m30 + mat.m20, mat.m31 + mat.m21, mat.m32 + mat.m22, mat.m33 + mat.m23);
             _far = new Plane3D(mat.m30 - mat.m20, mat.m31 - mat.m21, mat.m32 - mat.m22, mat.m33 - mat.m23);
-
-            // Normalize planes (optional, for consistent distances)
-            fixed (Plane3D* planes = &_left)
-            {
-                for (int i = 0; i < 6; i++)
-                {
-                    float3 normal = planes[i].normal;
-                    float length = math.length(normal);
-                    planes[i].normal /= length;
-                    planes[i].distance /= length;
-                }
-            }
         }
 
 
@@ -115,18 +103,6 @@ namespace Systems.Utilities.Math.Geometry3D
             _down = new Plane3D(camPos, fbl, nbl);
             _near = new Plane3D(nbl, ntr, ntl);
             _far = new Plane3D(ftr, fbr, ftl);
-
-            // Normalize planes (optional, for consistent distances)
-            fixed (Plane3D* planes = &_left)
-            {
-                for (int i = 0; i < 6; i++)
-                {
-                    float3 normal = planes[i].normal;
-                    float length = math.length(normal);
-                    planes[i].normal /= length;
-                    planes[i].distance /= length;
-                }
-            }
         }
 
 
