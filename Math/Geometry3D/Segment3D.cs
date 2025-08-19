@@ -42,13 +42,13 @@ namespace Systems.Utilities.Math.Geometry3D
         /// <summary>
         ///     Finds the closest point to the given target point on the line segment.
         /// </summary>
-        /// <param name="target">Target point to find the closest point from.</param>
+        /// <param name="point">Target point to find the closest point from.</param>
         /// <returns>Closest point on the line to the target.</returns>
         [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly float3 GetClosestPointToPoint(in float3 target)
+        public readonly float3 GetClosestPoint(in float3 point)
         {
             float3 lineDirection = math.normalize(end - start);
-            float3 offset = target - start;
+            float3 offset = point - start;
             float distance = math.dot(offset, lineDirection);
             return start + lineDirection * distance;
         }
@@ -61,7 +61,7 @@ namespace Systems.Utilities.Math.Geometry3D
         [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly float3 GetSymmetricPoint(in float3 point)
         {
-            float3 pointOnLine = GetClosestPointToPoint(point);
+            float3 pointOnLine = GetClosestPoint(point);
             float3 vectorToPoint = point - pointOnLine;
             return pointOnLine - vectorToPoint;
         }

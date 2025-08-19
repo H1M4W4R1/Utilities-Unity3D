@@ -43,13 +43,13 @@ namespace Systems.Utilities.Math.Geometry2D
         /// <summary>
         ///     Finds the closest point to the given target point on the line segment.
         /// </summary>
-        /// <param name="target">Target point to find the closest point from.</param>
+        /// <param name="point">Target point to find the closest point from.</param>
         /// <returns>Closest point on the line to the target.</returns>
         [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly float2 GetClosestPointToPoint(in float2 target)
+        public readonly float2 GetClosestPoint(in float2 point)
         {
             float2 lineDirection = math.normalize(end - start);
-            float2 v = target - start;
+            float2 v = point - start;
             float distance = math.dot(v, lineDirection);
             return start + lineDirection * distance;
         }
@@ -62,7 +62,7 @@ namespace Systems.Utilities.Math.Geometry2D
         [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly float2 GetSymmetricPoint(in float2 point)
         {
-            float2 pointOnLine = GetClosestPointToPoint(point);
+            float2 pointOnLine = GetClosestPoint(point);
             float2 vectorToPoint = point - pointOnLine;
             return pointOnLine - vectorToPoint;
         }
