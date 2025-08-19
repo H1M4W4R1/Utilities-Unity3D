@@ -6,7 +6,7 @@ using Unity.Burst;
 using Unity.Mathematics;
 using UnityEngine;
 
-namespace Systems.Utilities.Math.Geometry
+namespace Systems.Utilities.Math.Geometry3D
 {
     /// <summary>
     ///     Plane in 3D space

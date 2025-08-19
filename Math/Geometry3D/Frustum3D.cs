@@ -2,13 +2,12 @@
 using System.Runtime.InteropServices;
 using JetBrains.Annotations;
 using Systems.Utilities.Annotations;
-using Systems.Utilities.Math.Geometry;
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Mathematics;
 using UnityEngine;
 
-namespace Systems.Utilities.Math
+namespace Systems.Utilities.Math.Geometry3D
 {
     [BurstCompile] [StructLayout(LayoutKind.Explicit)]
     public unsafe struct Frustum3D : IUnmanaged<Frustum3D>

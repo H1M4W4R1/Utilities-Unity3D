@@ -5,7 +5,7 @@ using Systems.Utilities.Annotations;
 using Unity.Burst;
 using Unity.Mathematics;
 
-namespace Systems.Utilities.Math.Geometry
+namespace Systems.Utilities.Math.Geometry3D
 {
     /// <summary>
     ///     Line in 3D space
