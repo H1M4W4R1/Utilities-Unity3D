@@ -10,7 +10,7 @@ using UnityEngine;
 namespace Systems.Utilities.Math.Geometry3D
 {
     [BurstCompile] [StructLayout(LayoutKind.Explicit)]
-    public unsafe struct Frustum3D : IUnmanaged<Frustum3D>
+    public readonly unsafe struct Frustum3D : IUnmanaged<Frustum3D>
     {
         [FieldOffset(0)] private readonly Plane3D _left;
         [FieldOffset(16)] private readonly Plane3D _right;
