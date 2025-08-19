@@ -63,7 +63,7 @@ namespace Systems.Utilities.Math.Geometry3D
         public Plane3D(in Point3D a, in Point3D b, in Point3D c)
         {
             vectorized = int4.zero;
-            normal = math.normalize(math.cross((float3) (b - a), (float3) (a - a)));
+            normal = math.normalize(math.cross((float3) (b - a), (float3) (c - a)));
             distance = -math.dot((float3) normal, (float3) a);
         }
 
