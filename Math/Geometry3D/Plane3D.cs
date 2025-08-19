@@ -22,8 +22,8 @@ namespace Systems.Utilities.Math.Geometry3D
         /// <summary>
         ///     Normal vector of the plane
         /// </summary>
-        [FieldOffset(0)] public float3 normal;
-        
+        [FieldOffset(0)] public Direction3D normal;
+
         /// <summary>
         ///     Distance from origin
         /// </summary>
@@ -53,18 +53,18 @@ namespace Systems.Utilities.Math.Geometry3D
             normal = new float3(nx, ny, nz);
             this.distance = distance;
         }
-        
+
         /// <summary>
         ///     Creates a new plane with the given points.
         /// </summary>
         /// <param name="a">First point</param>
         /// <param name="b">Second point</param>
         /// <param name="c">Third point</param>
-        public Plane3D(in float3 a, in float3 b, in float3 c)
+        public Plane3D(in Point3D a, in Point3D b, in Point3D c)
         {
             vectorized = int4.zero;
-            normal = math.normalize(math.cross(b - a, c - a));
-            distance = -math.dot(normal, a);
+            normal = math.normalize(math.cross((float3) (b - a), (float3) (a - a)));
+            distance = -math.dot((float3) normal, (float3) a);
         }
 
         /// <summary>
@@ -72,7 +72,7 @@ namespace Systems.Utilities.Math.Geometry3D
         /// </summary>
         /// <param name="normal">The normal vector of the plane, a float3.</param>
         /// <param name="distance">The distance from the origin, a float.</param>
-        public Plane3D(in float3 normal, float distance)
+        public Plane3D(in Direction3D normal, float distance)
         {
             vectorized = int4.zero;
             this.normal = normal;
@@ -84,11 +84,11 @@ namespace Systems.Utilities.Math.Geometry3D
         /// </summary>
         /// <param name="normal">The normal vector of the plane, a float3.</param>
         /// <param name="point">A point that the plane passes through, a float3.</param>
-        public Plane3D(in float3 normal, in float3 point)
+        public Plane3D(in Direction3D normal, in Point3D point)
         {
             vectorized = int4.zero;
             this.normal = normal;
-            distance = -math.dot(normal, point);
+            distance = -math.dot((float3) normal, (float3) point);
         }
 
         /// <summary>
@@ -99,9 +99,9 @@ namespace Systems.Utilities.Math.Geometry3D
         ///     <see langword="true"/> if the point is on the positive side of the plane, <see langword="false"/> otherwise.
         /// </returns>
         [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly bool IsOnPositiveSide(in float3 point) => 
-            math.dot(normal, point) + distance >= 0f;
-        
+        public readonly bool IsOnPositiveSide(in Point3D point) =>
+            math.dot((float3) normal, (float3) point) + distance >= 0f;
+
         /// <summary>
         ///     Creates a new plane with the same normal vector but negative distance.
         /// </summary>
@@ -119,26 +119,28 @@ namespace Systems.Utilities.Math.Geometry3D
         ///     A new plane that is translated by the given amount.
         /// </returns>
         [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly Plane3D Translate(in float3 translation)
-            => new(normal, distance + math.dot(normal, translation));
+        public readonly Plane3D Translate(in Offset3D translation)
+            => new(normal, distance + math.dot((float3) normal, (float3) translation));
 
-        
+
         /// <summary>
         ///     Finds the closest point to the given target point on the plane.
         /// </summary>
-        /// <param name="target">Target point to find the closest point from.</param>
+        /// <param name="point">Target point to find the closest point from.</param>
         /// <returns>Closest point on the plane to the target.</returns>
         [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly float3 GetClosestPoint(in float3 target) =>
-            target - normal * math.dot(normal, target) + distance;
+        public readonly Point3D GetClosestPoint(in Point3D point) =>
+            point - normal * math.dot((float3) normal, (float3) point) +
+            new Offset3D(distance, distance, distance);
 
         /// <summary>
         ///     Finds the distance from the given target point to the plane.
         /// </summary>
-        /// <param name="target">Target point to find the distance from.</param>
+        /// <param name="point">Target point to find the distance from.</param>
         /// <returns>Distance from the target point to the plane.</returns>
         [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly float DistanceToPoint(in float3 target) => math.dot(normal, target) + distance;
+        public readonly float DistanceToPoint(in Point3D point)
+            => math.dot((float3) normal, (float3) point) + distance;
 
         /// <summary>
         ///     Determines whether two points are on the same side of the plane.
@@ -149,7 +151,7 @@ namespace Systems.Utilities.Math.Geometry3D
         ///     <see langword="true"/> if both points are on the same side of the plane, <see langword="false"/> otherwise.
         /// </returns>
         [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly bool ArePointsOnSameSide(in float3 a, in float3 b)
+        public readonly bool ArePointsOnSameSide(in Point3D a, in Point3D b)
         {
             float distA = DistanceToPoint(a);
             float distB = DistanceToPoint(b);
@@ -165,10 +167,10 @@ namespace Systems.Utilities.Math.Geometry3D
         /// <param name="enter">Time at which the ray intersects with the plane, or 0 if no intersection occurs.</param>
         /// <returns><see langword="true"/> if the ray intersects with the plane, <see langword="false"/> otherwise.</returns>
         [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly bool Raycast(in float3 origin, in float3 direction, out float enter)
+        public readonly bool Raycast(in Point3D origin, in Direction3D direction, out float enter)
         {
-            float a = Vector3.Dot(direction, normal);
-            float num = -Vector3.Dot(origin, normal) - distance;
+            float a = math.dot((float3) direction, (float3) normal);
+            float num = -math.dot((float3) origin, (float3) normal) - distance;
             if (Mathf.Approximately(a, 0.0f))
             {
                 enter = 0.0f;
@@ -178,7 +180,7 @@ namespace Systems.Utilities.Math.Geometry3D
             enter = num / a;
             return enter > 0.0;
         }
-        
+
         /// <summary>
         ///     Finds the point at which three planes intersect.
         /// </summary>
@@ -190,11 +192,11 @@ namespace Systems.Utilities.Math.Geometry3D
         ///     <see langword="true"/> if the three planes intersect at a single point, <see langword="false"/> otherwise.
         /// </returns>
         [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool IntersectPlanes(in Plane3D p1, in Plane3D p2, in Plane3D p3, out float3 point)
+        public static bool IntersectPlanes(in Plane3D p1, in Plane3D p2, in Plane3D p3, out Point3D point)
         {
-            float3 n1 = p1.normal;
-            float3 n2 = p2.normal;
-            float3 n3 = p3.normal;
+            float3 n1 = (float3) p1.normal;
+            float3 n2 = (float3) p2.normal;
+            float3 n3 = (float3) p3.normal;
 
             float det = math.dot(n1, math.cross(n2, n3));
             if (math.abs(det) < 1e-6f)
@@ -211,26 +213,28 @@ namespace Systems.Utilities.Math.Geometry3D
             return true;
         }
 
-#region Operators 
+#region Operators
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator float4(in Plane3D plane)
-            => new(plane.normal.x, plane.normal.y, plane.normal.z, plane.distance);
-        
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static implicit operator Plane3D(in float4 plane) => new(plane);
-        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static explicit operator float4(in Plane3D plane)
+            => new(plane.normal.X, plane.normal.Y, plane.normal.Z, plane.distance);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static implicit operator Plane3D(in float4 plane)
+            => new(plane);
+
 #endregion
 
 #region IEquatable<Plane3D> - implemented
 
-        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)] public readonly bool Equals(Plane3D other)
+        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly bool Equals(Plane3D other)
             => vectorized.Equals(other.vectorized);
 
-        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)] public readonly override bool Equals(object obj)
+        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly override bool Equals(object obj)
             => obj is Plane3D other && Equals(other);
 
-        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)] public readonly override int GetHashCode()
+        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly override int GetHashCode()
             => vectorized.GetHashCode();
 
         [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]

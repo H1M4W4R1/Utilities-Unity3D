@@ -14,6 +14,10 @@ namespace Systems.Utilities.Math.Geometry3D
     {
         private readonly float3 _value;
 
+        public float X => _value.x;
+        public float Y => _value.y;
+        public float Z => _value.z;
+        
         public Direction3D(in float3 value) => _value = value;
 
         public Direction3D(float x, float y, float z) : this(new float3(x, y, z))
@@ -26,19 +30,28 @@ namespace Systems.Utilities.Math.Geometry3D
 
 #region Math operators
 
+        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Offset3D operator *(in Direction3D left, float right) => new(left._value * right);
+        
+        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Offset3D operator *(float left, in Direction3D right) => new(left * right._value);
+        
+        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Offset3D operator /(in Direction3D left, float right) => new(left._value / right);
+        
+        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Offset3D operator /(float left, in Direction3D right) => new(left / right._value);
 
+        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Direction3D operator -(in Direction3D direction) => new(-direction._value);
 #endregion
 
 #region Conversion operators
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator float3(in Direction3D direction) => direction._value;
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static implicit operator Direction3D(in float3 direction) => new(direction);
 
         [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]

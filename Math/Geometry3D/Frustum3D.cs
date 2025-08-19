@@ -112,7 +112,7 @@ namespace Systems.Utilities.Math.Geometry3D
         /// <param name="point">The point to check.</param>
         /// <returns>True if the point is inside, false otherwise.</returns>
         [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool ContainsPoint(in float3 point)
+        public bool ContainsPoint(in Point3D point)
         {
             // Check for all planes
             fixed (Plane3D* planes = &_left)
@@ -139,15 +139,15 @@ namespace Systems.Utilities.Math.Geometry3D
             lines = new NativeArray<Segment3D>(12, linesAllocator);
 
             // Compute corners
-            Plane3D.IntersectPlanes(_near, _up, _left, out float3 ntl);
-            Plane3D.IntersectPlanes(_near, _up, _right, out float3 ntr);
-            Plane3D.IntersectPlanes(_near, _down, _left, out float3 nbl);
-            Plane3D.IntersectPlanes(_near, _down, _right, out float3 nbr);
+            Plane3D.IntersectPlanes(_near, _up, _left, out Point3D ntl);
+            Plane3D.IntersectPlanes(_near, _up, _right, out Point3D ntr);
+            Plane3D.IntersectPlanes(_near, _down, _left, out Point3D nbl);
+            Plane3D.IntersectPlanes(_near, _down, _right, out Point3D nbr);
 
-            Plane3D.IntersectPlanes(_far, _up, _left, out float3 ftl);
-            Plane3D.IntersectPlanes(_far, _up, _right, out float3 ftr);
-            Plane3D.IntersectPlanes(_far, _down, _left, out float3 fbl);
-            Plane3D.IntersectPlanes(_far, _down, _right, out float3 fbr);
+            Plane3D.IntersectPlanes(_far, _up, _left, out Point3D ftl);
+            Plane3D.IntersectPlanes(_far, _up, _right, out Point3D ftr);
+            Plane3D.IntersectPlanes(_far, _down, _left, out Point3D fbl);
+            Plane3D.IntersectPlanes(_far, _down, _right, out Point3D fbr);
 
             // Near plane
             lines[0] = new Segment3D(ntl, ntr);
