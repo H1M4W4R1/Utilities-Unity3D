@@ -18,7 +18,7 @@ namespace Systems.Utilities.Math.Geometry2D
         [FieldOffset(0)] public readonly float2 start;
         [FieldOffset(12)] public readonly float2 end;
 
-        public Line2D(float2 start, float2 end)
+        public Line2D(in float2 start, in float2 end)
         {
             vectorized = int4.zero;
             this.start = start;

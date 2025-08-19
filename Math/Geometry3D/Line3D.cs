@@ -17,7 +17,7 @@ namespace Systems.Utilities.Math.Geometry3D
         [FieldOffset(0)] public readonly float3 start;
         [FieldOffset(12)] public readonly float3 end;
 
-        public Line3D(float3 start, float3 end)
+        public Line3D(in float3 start, in float3 end)
         {
             vectorized = int3x2.zero;
             this.start = start;
