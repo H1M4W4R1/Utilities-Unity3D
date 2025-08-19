@@ -3,7 +3,9 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using Systems.Utilities.Annotations;
 using Unity.Burst;
+using Unity.Burst.CompilerServices;
 using Unity.Mathematics;
+using UnityEngine;
 
 namespace Systems.Utilities.Math.Geometry3D
 {
@@ -59,21 +61,122 @@ namespace Systems.Utilities.Math.Geometry3D
         /// </summary>
         /// <param name="point">Point to compute the symmetric point of.</param>
         /// <returns>Symmetric point to the given point relative to this line.</returns>
+        /// <remarks>
+        ///     We simply mirror it using line as it will give us the same result.
+        /// </remarks>
         [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Point3D GetSymmetricPoint(in Point3D point)
-        {
-            Point3D pointOnLine = GetClosestPoint(point);
-            Offset3D vectorToPoint = point - pointOnLine;
-            return pointOnLine - vectorToPoint;
-        }
+            => new Line3D(this).GetSymmetricPoint(point);
 
         /// <summary>
         ///     Computes whether this line crosses the given <paramref name="plane"/>.
         /// </summary>
         /// <param name="plane">Plane to check for intersection with.</param>
         /// <returns><see langword="true"/> if the two shapes intersect, <see langword="false"/> otherwise.</returns>
+        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)] public bool Intersects(in Plane3D plane)
+            => !plane.ArePointsOnSameSide(start, end);
+
+        /// <summary>
+        ///     Computes whether this line segment intersects with the given <paramref name="line"/>.
+        /// </summary>
+        /// <param name="line">Line to check for intersection with.</param>
+        /// <returns><see langword="true"/> if the two shapes intersect, <see langword="false"/> otherwise.</returns>
+        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)] public bool Intersects(in Line3D line)
+        {
+            Offset3D u = end - start;
+            Offset3D w = start - line.point;
+
+            float a = math.dot((float3) u, (float3) u);
+            float b = math.dot((float3) u, (float3) line.direction);
+            float c = math.dot((float3) line.direction, (float3) line.direction);
+            float d = math.dot((float3) u, (float3) w);
+            float e = math.dot((float3) line.direction, (float3) w);
+            float denominator = a * c - b * b;
+
+            if (Mathf.Approximately(math.abs(denominator), 0))
+            {
+                // segment and line are parallel
+                if (Mathf.Approximately(math.lengthsq(math.cross((float3) u, (float3) w)), 0)) return true;
+
+                return false;
+            }
+
+            float t = (b * e - c * d) / denominator;
+            // float s = (a * e - b * d) / denominator;
+
+            // Check if the intersection point is on the line segment
+            return t is >= 0f and <= 1f;
+        }
+
+        /// <summary>
+        ///     Computes whether this line segment intersects with the given <paramref name="segment"/>.
+        /// </summary>
+        /// <param name="segment">Line segment to check for intersection with.</param>
+        /// <returns><see langword="true"/> if the two shapes intersect, <see langword="false"/> otherwise.</returns>
         [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool CrossesPlane(in Plane3D plane) => !plane.ArePointsOnSameSide(start, end);
+        public bool Intersects(in Segment3D segment)
+        {
+            Offset3D u = end - start;
+            Offset3D v = segment.end - segment.start;
+            Offset3D w = start - segment.start;
+            float a = math.dot((float3) u, (float3) u);
+            float b = math.dot((float3) u, (float3) v);
+            float c = math.dot((float3) v, (float3) v);
+            float d = math.dot((float3) u, (float3) w);
+            float e = math.dot((float3) v, (float3) w);
+            float denominator = a * c - b * b;
+
+            if (Hint.Unlikely(Mathf.Approximately(math.abs(denominator), 0))) // lines are parallel
+            {
+                // We're collinear
+                if (Mathf.Approximately(math.lengthsq(math.cross((float3) w, (float3) u)), 0)) return true;
+                return false;
+            }
+
+            float t = (b * e - c * d) / denominator;
+            float s = (a * e - b * d) / denominator;
+
+            // Check if the intersection point is on both segments
+            return t is >= 0f and <= 1f && s is >= 0f and <= 1f;
+        }
+
+        /// <summary>
+        ///     Computes whether this line is coincident with the given <paramref name="plane"/>.
+        /// </summary>
+        /// <param name="plane">Plane to check for coincidence with.</param>
+        /// <returns><see langword="true"/> if the two shapes are coincident, <see langword="false"/> otherwise.</returns>
+        /// <remarks>
+        ///     When whole line is coincident to plane then segment of this line is also coincident.
+        ///     And when segment of this line is coincident to plane then whole line is also coincident.
+        /// </remarks>
+        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool IsCoincident(in Plane3D plane) => new Line3D(this).IsCoincident(plane);
+
+        /// <summary>
+        ///     Computes whether this line is coincident with the given <paramref name="line"/>.
+        /// </summary>
+        /// <param name="line">Line to check for coincidence with.</param>
+        /// <returns><see langword="true"/> if the two shapes are coincident, <see langword="false"/> otherwise.</returns>
+        /// <remarks>
+        ///     When whole line is coincident to line then segment of this line is also coincident.
+        ///     And when segment of this line is coincident to line then whole line is also coincident.
+        /// </remarks>
+        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)] public bool IsCoincident(in Line3D line)
+            => new Line3D(this).IsCoincident(line);
+
+        /// <summary>
+        ///     Computes whether this line is coincident with the given <paramref name="point"/>.
+        /// </summary>
+        /// <param name="point">Point to check for coincidence with.</param>
+        /// <returns><see langword="true"/> if the two shapes are coincident, <see langword="false"/> otherwise.</returns>
+        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool IsCoincident(in Point3D point)
+        {
+            Point3D closestPoint = GetClosestPoint(point);
+            return Hint.Unlikely(Mathf.Approximately(closestPoint.X, point.X) &&
+                                 Mathf.Approximately(closestPoint.Y, point.Y) &&
+                                 Mathf.Approximately(closestPoint.Z, point.Z));
+        }
 
         /// <summary>
         ///     Computes the length of the line segment.
@@ -87,7 +190,7 @@ namespace Systems.Utilities.Math.Geometry3D
         /// </summary>
         /// <returns>Length of the line segment squared.</returns>
         [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)] public float LengthSq()
-            => math.distancesq((float3)start, (float3) end);
+            => math.distancesq((float3) start, (float3) end);
 
 #region IEquatable<Line3D> - implemented
 
