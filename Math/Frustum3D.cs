@@ -117,7 +117,7 @@ namespace Systems.Utilities.Math
                 }    
             }
 
-            return false;
+            return true;
         }
         
         /// <summary>

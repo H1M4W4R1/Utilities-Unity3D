@@ -62,7 +62,7 @@ namespace Systems.Utilities.Math.Geometry
 
 #region IEquatable<Line3D> - implemented
 
-        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)] public bool Equals(Line2D other)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public bool Equals(Line2D other)
             => vectorized.Equals(other.vectorized);
 
         [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)] public override bool Equals(object obj)
@@ -72,10 +72,10 @@ namespace Systems.Utilities.Math.Geometry
             => vectorized.GetHashCode();
 
         [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator ==(Line2D left, Line2D right) => left.Equals(right);
+        public static bool operator ==(in Line2D left, in Line2D right) => left.Equals(right);
 
         [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator !=(Line2D left, Line2D right) => !left.Equals(right);
+        public static bool operator !=(in Line2D left, in Line2D right) => !left.Equals(right);
 
 #endregion
     }

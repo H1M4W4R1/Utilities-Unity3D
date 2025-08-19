@@ -19,7 +19,7 @@ namespace Systems.Utilities.Math.Geometry
         [FieldOffset(0)] public float3 normal;
         [FieldOffset(12)] public float distance;
 
-        public Plane3D(float4 planeData)
+        public Plane3D(in float4 planeData)
         {
             vectorized = int4.zero;
             normal = new float3(planeData.x, planeData.y, planeData.z);
@@ -33,21 +33,21 @@ namespace Systems.Utilities.Math.Geometry
             this.distance = distance;
         }
 
-        public Plane3D(float3 a, float3 b, float3 c)
+        public Plane3D(in float3 a, in float3 b, in float3 c)
         {
             vectorized = int4.zero;
             normal = math.normalize(math.cross(b - a, c - a));
             distance = -math.dot(normal, a);
         }
 
-        public Plane3D(float3 normal, float distance)
+        public Plane3D(in float3 normal, float distance)
         {
             vectorized = int4.zero;
             this.normal = normal;
             this.distance = distance;
         }
 
-        public Plane3D(float3 normal, float3 point)
+        public Plane3D(in float3 normal, in float3 point)
         {
             vectorized = int4.zero;
             this.normal = normal;
@@ -97,7 +97,7 @@ namespace Systems.Utilities.Math.Geometry
         }
 
         [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool IntersectPlanes(Plane3D p1, Plane3D p2, Plane3D p3, out float3 point)
+        public static bool IntersectPlanes(in Plane3D p1, in Plane3D p2, in Plane3D p3, out float3 point)
         {
             float3 n1 = p1.normal;
             float3 n2 = p2.normal;
@@ -118,33 +118,33 @@ namespace Systems.Utilities.Math.Geometry
             return true;
         }
 
-#region Operators
+#region Operators 
 
-        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static implicit operator float4(Plane3D plane)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static implicit operator float4(in Plane3D plane)
             => new float4(plane.normal.x, plane.normal.y, plane.normal.z, plane.distance);
         
-        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static implicit operator Plane3D(float4 plane) => new Plane3D(plane);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static implicit operator Plane3D(in float4 plane) => new Plane3D(plane);
         
 #endregion
 
 #region IEquatable<Plane3D> - implemented
 
-        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)] public bool Equals(Plane3D other)
+        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)] public readonly bool Equals(Plane3D other)
             => vectorized.Equals(other.vectorized);
 
-        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)] public override bool Equals(object obj)
+        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)] public readonly override bool Equals(object obj)
             => obj is Plane3D other && Equals(other);
 
-        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)] public override int GetHashCode()
+        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)] public readonly override int GetHashCode()
             => vectorized.GetHashCode();
 
         [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator ==(Plane3D left, Plane3D right) => left.Equals(right);
+        public static bool operator ==(in Plane3D left, in Plane3D right) => left.Equals(right);
 
         [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator !=(Plane3D left, Plane3D right) => !left.Equals(right);
+        public static bool operator !=(in Plane3D left, in Plane3D right) => !left.Equals(right);
 
 #endregion
     }
