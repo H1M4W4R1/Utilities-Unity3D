@@ -41,13 +41,12 @@ namespace Systems.Utilities.Frustum
             float aspect,
             float near,
             float far,
-            out float4 left,
-            out float4 right,
-            out float4 top,
-            out float4 bottom,
-            out float4 nearP,
-            out float4 farP)
+            ref NativeArray<float4> planes)
         {
+            // Assume that planes length must be six
+            Assert.IsTrue(planes.IsCreated, "Planes array must be created");
+            Assert.IsTrue(planes.Length == 6, "Planes array length must be 6");
+            
             // Basis vectors
             float3 forward = math.mul(camRot, new float3(0, 0, 1));
             float3 up = math.mul(camRot, new float3(0, 1, 0));
@@ -76,12 +75,19 @@ namespace Systems.Utilities.Frustum
             float3 fbr = farCenter - up * halfFarHeight + rightV * halfFarWidth;
 
             // Planes
-            CreatePlane(camPos, nbl, fbl, out left);
-            CreatePlane(camPos, fbr, nbr, out right);
-            CreatePlane(camPos, ntr, ftr, out top);
-            CreatePlane(camPos, fbl, nbl, out bottom);
-            CreatePlane(nbl, ntr, ntl, out nearP);
-            CreatePlane(ftr, fbr, ftl, out farP);
+            CreatePlane(camPos, nbl, fbl, out float4 left);
+            CreatePlane(camPos, fbr, nbr, out float4 right);
+            CreatePlane(camPos, ntr, ftr, out float4 top);
+            CreatePlane(camPos, fbl, nbl, out float4 bottom);
+            CreatePlane(nbl, ntr, ntl, out float4 nearP);
+            CreatePlane(ftr, fbr, ftl, out float4 farP);
+
+            planes[0] = left;
+            planes[1] = top;
+            planes[2] = right;
+            planes[3] = bottom;
+            planes[4] = nearP;
+            planes[5] = farP;
         }
 
         /// <summary>
@@ -94,6 +100,10 @@ namespace Systems.Utilities.Frustum
             [NotNull] this Camera camera,
             ref NativeArray<float4> planes)
         {
+            // Assume that planes length must be six
+            Assert.IsTrue(planes.IsCreated, "Planes array must be created");
+            Assert.IsTrue(planes.Length == 6, "Planes array length must be 6");
+            
             Matrix4x4 projectionMatrix = camera.projectionMatrix;
             Matrix4x4 viewMatrix = camera.worldToCameraMatrix;
             ExtractFrustumPlanes(projectionMatrix, viewMatrix, ref planes);

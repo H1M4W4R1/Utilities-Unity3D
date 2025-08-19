@@ -46,7 +46,7 @@ namespace Systems.Utilities.Indexing.Grid
         ///     Get tilemap position from this index
         /// </summary>
         [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int3 GetTilemapPosition(in GridInfo3D gridInfo)
+        public int3 GetAbsolutePosition(in GridInfo3D gridInfo)
         {
             FromIndexAbsolute(value, gridInfo, out int3 result);
             return result;
