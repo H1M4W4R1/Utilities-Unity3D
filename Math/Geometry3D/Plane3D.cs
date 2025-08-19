@@ -178,7 +178,6 @@ namespace Systems.Utilities.Math.Geometry3D
             enter = num / a;
             return enter > 0.0;
         }
-
         
         /// <summary>
         ///     Finds the point at which three planes intersect.
@@ -216,10 +215,10 @@ namespace Systems.Utilities.Math.Geometry3D
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static implicit operator float4(in Plane3D plane)
-            => new float4(plane.normal.x, plane.normal.y, plane.normal.z, plane.distance);
+            => new(plane.normal.x, plane.normal.y, plane.normal.z, plane.distance);
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static implicit operator Plane3D(in float4 plane) => new Plane3D(plane);
+        public static implicit operator Plane3D(in float4 plane) => new(plane);
         
 #endregion
 
