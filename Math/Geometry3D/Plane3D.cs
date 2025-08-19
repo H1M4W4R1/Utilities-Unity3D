@@ -214,7 +214,7 @@ namespace Systems.Utilities.Math.Geometry3D
 #region Operators 
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static implicit operator float4(in Plane3D plane)
+        public static explicit operator float4(in Plane3D plane)
             => new(plane.normal.x, plane.normal.y, plane.normal.z, plane.distance);
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
