@@ -215,17 +215,18 @@ namespace Systems.Utilities.Math.Geometry3D
 
 #region Operators
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static explicit operator float4(in Plane3D plane)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator float4(in Plane3D plane)
             => new(plane.normal.X, plane.normal.Y, plane.normal.Z, plane.distance);
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static implicit operator Plane3D(in float4 plane)
-            => new(plane);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static implicit operator Plane3D(in float4 plane) => new(plane);
 
 #endregion
 
 #region IEquatable<Plane3D> - implemented
 
-        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly bool Equals(Plane3D other)
             => vectorized.Equals(other.vectorized);
 

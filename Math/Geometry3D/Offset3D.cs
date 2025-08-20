@@ -10,6 +10,7 @@ namespace Systems.Utilities.Math.Geometry3D
     /// <summary>
     ///     Represents offset in 3D space
     /// </summary>
+    [BurstCompile]
     public readonly struct Offset3D : IUnmanaged<Offset3D>, IEquatable<Offset3D>
     {
         private readonly float3 _value;
@@ -62,7 +63,7 @@ namespace Systems.Utilities.Math.Geometry3D
         /// <param name="left">The offset to add to.</param>
         /// <param name="right">The offset to add.</param>
         /// <returns>A new <see cref="Offset3D"/> instance with the result of the addition.</returns>
-        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Offset3D operator +(in Offset3D left, in Offset3D right)
             => new(left.X + right.X, left.Y + right.Y, left.Z + right.Z);
 
@@ -72,7 +73,7 @@ namespace Systems.Utilities.Math.Geometry3D
         /// <param name="left">The offset to subtract from.</param>
         /// <param name="right">The offset to subtract.</param>
         /// <returns>A new <see cref="Offset3D"/> instance with the result of the subtraction.</returns>
-        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Offset3D operator -(in Offset3D left, in Offset3D right)
             => new(left.X - right.X, left.Y - right.Y, left.Z - right.Z);
 
@@ -82,7 +83,7 @@ namespace Systems.Utilities.Math.Geometry3D
         /// <param name="left">The offset to multiply.</param>
         /// <param name="right">The scalar to multiply by.</param>
         /// <returns>A new <see cref="Offset3D"/> instance with the result of the multiplication.</returns>
-        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Offset3D operator *(in Offset3D left, float right)
             => new(left.X * right, left.Y * right, left.Z * right);
 
@@ -92,7 +93,7 @@ namespace Systems.Utilities.Math.Geometry3D
         /// <param name="left">The scalar to multiply by.</param>
         /// <param name="right">The offset to multiply.</param>
         /// <returns>A new <see cref="Offset3D"/> instance with the result of the multiplication.</returns>
-        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Offset3D operator *(float left, in Offset3D right)
             => new(left * right.X, left * right.Y, left * right.Z);
 
@@ -102,7 +103,7 @@ namespace Systems.Utilities.Math.Geometry3D
         /// <param name="left">The offset to divide.</param>
         /// <param name="right">The scalar to divide by.</param>
         /// <returns>A new <see cref="Offset3D"/> instance with the result of the division.</returns>
-        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Offset3D operator /(in Offset3D left, float right)
             => new(left.X / right, left.Y / right, left.Z / right);
 
@@ -112,7 +113,7 @@ namespace Systems.Utilities.Math.Geometry3D
         /// <param name="left">The scalar to divide.</param>
         /// <param name="right">The offset to divide by.</param>
         /// <returns>A new <see cref="Offset3D"/> instance with the result of the division.</returns>
-        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Offset3D operator /(float left, in Offset3D right)
             => new(left / right.X, left / right.Y, left / right.Z);
         
@@ -121,27 +122,27 @@ namespace Systems.Utilities.Math.Geometry3D
         /// </summary>
         /// <param name="point">The point to negate.</param>
         /// <returns>A new <see cref="Offset3D"/> which is the negation of the given <see cref="Offset3D"/>.</returns>
-        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Offset3D operator -(in Offset3D point) => new(-point.X, -point.Y, -point.Z);
         
 #endregion
 
 #region Conversion Operators
         
-        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator Offset3D(in Segment3D segment) => new(segment.start, segment.end);
         
-        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator float3(in Offset3D point) => new(point.X, point.Y, point.Z);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator float3(in Offset3D offset) => offset._value;
 
-        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Vector3(in Offset3D point) => new(point.X, point.Y, point.Z);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator Vector3(in Offset3D offset) => offset._value;
 
-        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static implicit operator Offset3D(in float3 point) => new(point.x, point.y, point.z);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static implicit operator Offset3D(in float3 offset) => new(offset);
 
-        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static implicit operator Offset3D(in Vector3 point) => new(point.x, point.y, point.z);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static implicit operator Offset3D(in Vector3 offset) => new(offset);
 
 #endregion
 

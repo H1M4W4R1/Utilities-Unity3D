@@ -10,6 +10,7 @@ namespace Systems.Utilities.Math.Geometry3D
     /// <summary>
     ///     Direction in 3D space
     /// </summary>
+    [BurstCompile]
     public readonly struct Direction3D : IUnmanaged<Direction3D>, IEquatable<Direction3D>
     {
         private readonly float3 _value;
@@ -52,7 +53,7 @@ namespace Systems.Utilities.Math.Geometry3D
         /// <param name="left">The direction to multiply.</param>
         /// <param name="right">The scalar to multiply by.</param>
         /// <returns>A new <see cref="Offset3D"/> instance with the result of the multiplication.</returns>
-        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Offset3D operator *(in Direction3D left, float right) => new(left._value * right);
         
         /// <summary>
@@ -61,7 +62,7 @@ namespace Systems.Utilities.Math.Geometry3D
         /// <param name="left">The scalar to multiply by.</param>
         /// <param name="right">The direction to multiply.</param>
         /// <returns>A new <see cref="Offset3D"/> instance with the result of the multiplication.</returns>
-        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Offset3D operator *(float left, in Direction3D right) => new(left * right._value);
         
         /// <summary>
@@ -70,7 +71,7 @@ namespace Systems.Utilities.Math.Geometry3D
         /// <param name="left">The direction to divide.</param>
         /// <param name="right">The scalar to divide by.</param>
         /// <returns>A new <see cref="Offset3D"/> instance with the result of the division.</returns>
-        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Offset3D operator /(in Direction3D left, float right) => new(left._value / right);
         
         /// <summary>
@@ -79,7 +80,7 @@ namespace Systems.Utilities.Math.Geometry3D
         /// <param name="left">The scalar to divide.</param>
         /// <param name="right">The direction to divide by.</param>
         /// <returns>A new <see cref="Offset3D"/> instance with the result of the division.</returns>
-        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Offset3D operator /(float left, in Direction3D right) => new(left / right._value);
 
         /// <summary>
@@ -87,23 +88,23 @@ namespace Systems.Utilities.Math.Geometry3D
         /// </summary>
         /// <param name="direction">The direction to negate.</param>
         /// <returns>A new <see cref="Direction3D"/> instance with the negated direction.</returns>
-        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Direction3D operator -(in Direction3D direction) => new(-direction._value);
 #endregion
 
-#region Conversion operators
+#region Conversion operators 
 
-        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator float3(in Direction3D direction) => direction._value;
 
-        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static implicit operator Direction3D(in float3 direction) => new(direction);
 
-        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator Vector3(in Direction3D direction) => direction._value;
 
-        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static implicit operator Direction3D(in Vector3 direction) => new(direction);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] 
+        public static implicit operator Direction3D(in Vector3 direction) => new(direction);  
 
 #endregion
 

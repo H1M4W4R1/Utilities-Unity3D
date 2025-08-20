@@ -74,6 +74,7 @@ namespace Systems.Utilities.Math.Geometry3D
         /// </summary>
         /// <param name="tPoint">Point to compute the distance from.</param>
         /// <returns>Distance from the given point to the line.</returns>
+        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public float GetDistance(in Point3D tPoint)
         {
             Offset3D offset = tPoint - GetClosestPoint(tPoint);
@@ -113,6 +114,7 @@ namespace Systems.Utilities.Math.Geometry3D
         /// </summary>
         /// <param name="line">Line to check for intersection with.</param>
         /// <returns><see langword="true"/> if the two shapes intersect, <see langword="false"/> otherwise.</returns>
+        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Intersects(in Line3D line)
         {
             float3 r = (float3) (point - line.point);

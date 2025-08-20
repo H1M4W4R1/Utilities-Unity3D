@@ -10,6 +10,7 @@ namespace Systems.Utilities.Math.Geometry3D
     /// <summary>
     ///     Represents a point in 3D space
     /// </summary>
+    [BurstCompile]
     public readonly struct Point3D : IUnmanaged<Point3D>, IEquatable<Point3D>
     {
         private readonly float3 _value;
@@ -79,11 +80,17 @@ namespace Systems.Utilities.Math.Geometry3D
 
 #region Conversion Operators
 
-        public static explicit operator float3(in Point3D point) => new(point.X, point.Y, point.Z);
-        public static explicit operator Vector3(in Point3D point) => new(point.X, point.Y, point.Z);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator float3(in Point3D point) => point._value;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator Vector3(in Point3D point) => point._value;
 
-        public static implicit operator Point3D(in float3 point) => new(point.x, point.y, point.z);
-        public static implicit operator Point3D(in Vector3 point) => new(point.x, point.y, point.z);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static implicit operator Point3D(in float3 point) => new(point);
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static implicit operator Point3D(in Vector3 point) => new(point);
 
 #endregion
 
