@@ -45,8 +45,7 @@ namespace Systems.Utilities.Indexing.Grid
         /// <summary>
         ///     Get tilemap position from this index
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int3 GetAbsolutePosition(in GridInfo3D gridInfo)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public int3 GetAbsolutePosition(in GridInfo3D gridInfo)
         {
             FromIndexAbsolute(value, gridInfo, out int3 result);
             return result;
@@ -173,104 +172,82 @@ namespace Systems.Utilities.Indexing.Grid
 
 #region NEIGHBORS
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int GetNorthIndex3D(in GridInfo3D gridInfo)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public int GetNorthIndex3D(in GridInfo3D gridInfo)
             => GetNeighborIndex3D(0, +1, 0, gridInfo);
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int GetSouthIndex3D(in GridInfo3D gridInfo)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public int GetSouthIndex3D(in GridInfo3D gridInfo)
             => GetNeighborIndex3D(0, -1, 0, gridInfo);
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int GetEastIndex3D(in GridInfo3D gridInfo)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public int GetEastIndex3D(in GridInfo3D gridInfo)
             => GetNeighborIndex3D(+1, 0, 0, gridInfo);
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int GetWestIndex3D(in GridInfo3D gridInfo)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public int GetWestIndex3D(in GridInfo3D gridInfo)
             => GetNeighborIndex3D(-1, 0, 0, gridInfo);
-        
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int GetNorthEastIndex3D(in GridInfo3D gridInfo)
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public int GetNorthEastIndex3D(in GridInfo3D gridInfo)
             => GetNeighborIndex3D(+1, +1, 0, gridInfo);
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int GetNorthWestIndex3D(in GridInfo3D gridInfo)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public int GetNorthWestIndex3D(in GridInfo3D gridInfo)
             => GetNeighborIndex3D(-1, +1, 0, gridInfo);
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int GetSouthEastIndex3D(in GridInfo3D gridInfo)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public int GetSouthEastIndex3D(in GridInfo3D gridInfo)
             => GetNeighborIndex3D(+1, -1, 0, gridInfo);
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int GetSouthWestIndex3D(in GridInfo3D gridInfo)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public int GetSouthWestIndex3D(in GridInfo3D gridInfo)
             => GetNeighborIndex3D(-1, -1, 0, gridInfo);
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int GetUpIndex3D(in GridInfo3D gridInfo)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public int GetUpIndex3D(in GridInfo3D gridInfo)
             => GetNeighborIndex3D(0, 0, +1, gridInfo);
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int GetDownIndex3D(in GridInfo3D gridInfo)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public int GetDownIndex3D(in GridInfo3D gridInfo)
             => GetNeighborIndex3D(0, 0, -1, gridInfo);
-        
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int GetEastUpIndex3D(in GridInfo3D gridInfo) =>
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public int GetEastUpIndex3D(in GridInfo3D gridInfo) =>
             GetNeighborIndex3D(+1, 0, +1, gridInfo);
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int GetEastDownIndex3D(in GridInfo3D gridInfo)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public int GetEastDownIndex3D(in GridInfo3D gridInfo)
             => GetNeighborIndex3D(+1, 0, -1, gridInfo);
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int GetWestUpIndex3D(in GridInfo3D gridInfo) =>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public int GetWestUpIndex3D(in GridInfo3D gridInfo) =>
             GetNeighborIndex3D(-1, 0, +1, gridInfo);
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int GetWestDownIndex3D(in GridInfo3D gridInfo)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public int GetWestDownIndex3D(in GridInfo3D gridInfo)
             => GetNeighborIndex3D(-1, 0, -1, gridInfo);
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int GetNorthUpIndex3D(in GridInfo3D gridInfo) =>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public int GetNorthUpIndex3D(in GridInfo3D gridInfo) =>
             GetNeighborIndex3D(0, +1, +1, gridInfo);
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int GetNorthDownIndex3D(in GridInfo3D gridInfo)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public int GetNorthDownIndex3D(in GridInfo3D gridInfo)
             => GetNeighborIndex3D(0, +1, -1, gridInfo);
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int GetSouthUpIndex3D(in GridInfo3D gridInfo) =>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public int GetSouthUpIndex3D(in GridInfo3D gridInfo) =>
             GetNeighborIndex3D(0, -1, +1, gridInfo);
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int GetSouthDownIndex3D(in GridInfo3D gridInfo)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public int GetSouthDownIndex3D(in GridInfo3D gridInfo)
             => GetNeighborIndex3D(0, -1, -1, gridInfo);
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int GetNorthEastUpIndex3D(in GridInfo3D gridInfo)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public int GetNorthEastUpIndex3D(in GridInfo3D gridInfo)
             => GetNeighborIndex3D(+1, +1, +1, gridInfo);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int GetNorthEastDownIndex3D(in GridInfo3D gridInfo)
             => GetNeighborIndex3D(+1, +1, -1, gridInfo);
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int GetNorthWestUpIndex3D(in GridInfo3D gridInfo)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public int GetNorthWestUpIndex3D(in GridInfo3D gridInfo)
             => GetNeighborIndex3D(-1, +1, +1, gridInfo);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int GetNorthWestDownIndex3D(in GridInfo3D gridInfo)
             => GetNeighborIndex3D(-1, +1, -1, gridInfo);
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int GetSouthEastUpIndex3D(in GridInfo3D gridInfo)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public int GetSouthEastUpIndex3D(in GridInfo3D gridInfo)
             => GetNeighborIndex3D(+1, -1, +1, gridInfo);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int GetSouthEastDownIndex3D(in GridInfo3D gridInfo)
             => GetNeighborIndex3D(+1, -1, -1, gridInfo);
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int GetSouthWestUpIndex3D(in GridInfo3D gridInfo)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public int GetSouthWestUpIndex3D(in GridInfo3D gridInfo)
             => GetNeighborIndex3D(-1, -1, +1, gridInfo);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -278,7 +255,11 @@ namespace Systems.Utilities.Indexing.Grid
             => GetNeighborIndex3D(-1, -1, -1, gridInfo);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private int GetNeighborIndex3D(int dx, int dy, int dz, in GridInfo3D gridInfo)
+        public int GetNeighborIndex3D(int3 direction, in GridInfo3D gridInfo)
+            => GetNeighborIndex3D(direction.x, direction.y, direction.z, gridInfo);
+
+        [BurstCompile]
+        public int GetNeighborIndex3D(int dx, int dy, int dz, in GridInfo3D gridInfo)
         {
             FromIndexRelative(value, gridInfo, out int x, out int y, out int z);
 

@@ -196,7 +196,7 @@ namespace Systems.Utilities.Indexing.Grid
         public int GetSouthWestIndex2D(in GridInfo2D gridInfo)
             => GetNeighborIndex2D(-1, -1, gridInfo);
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [BurstCompile]
         private int GetNeighborIndex2D(int dx, int dy, in GridInfo2D gridInfo)
         {
             FromIndexRelative(value, gridInfo, out int x, out int y);
