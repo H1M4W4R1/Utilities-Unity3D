@@ -59,14 +59,14 @@ namespace Systems.Utilities.Math.Geometry3D
         ///     Finds the closest point to the given target point on the line.
         /// </summary>
         /// <param name="tPoint">Target point to find the closest point from.</param>
-        /// <returns>Closest point on the line to the target.</returns>
-        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Point3D GetClosestPoint(in Point3D tPoint)
+        /// <param name="foundPoint">Closest point on the line to the target.</param>
+        [BurstCompile]
+        public void GetClosestPoint(in Point3D tPoint, out Point3D foundPoint)
         {
             Offset3D v = tPoint - point;
             float t = math.dot((float3) v, (float3) direction) /
                       math.dot((float3) direction, (float3) direction);
-            return point + t * direction;
+            foundPoint = point + t * direction;
         }
 
         /// <summary>
@@ -74,10 +74,11 @@ namespace Systems.Utilities.Math.Geometry3D
         /// </summary>
         /// <param name="tPoint">Point to compute the distance from.</param>
         /// <returns>Distance from the given point to the line.</returns>
-        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [BurstCompile]
         public float GetDistance(in Point3D tPoint)
         {
-            Offset3D offset = tPoint - GetClosestPoint(tPoint);
+            GetClosestPoint(tPoint, out Point3D pointOnLine);
+            Offset3D offset = tPoint - pointOnLine;
             return math.length((float3) offset);
         }
 
@@ -85,13 +86,13 @@ namespace Systems.Utilities.Math.Geometry3D
         ///     Computes the symmetric point to the given point relative to this line.
         /// </summary>
         /// <param name="tPoint">Point to compute the symmetric point of.</param>
-        /// <returns>Symmetric point to the given point relative to this line.</returns>
-        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Point3D GetSymmetricPoint(in Point3D tPoint)
+        /// <param name="symmetricPoint">Symmetric point to the given point relative to this line.</param>
+        [BurstCompile]
+        public void GetSymmetricPoint(in Point3D tPoint, out Point3D symmetricPoint)
         {
-            Point3D pointOnLine = GetClosestPoint(tPoint);
+            GetClosestPoint(tPoint, out Point3D pointOnLine);
             Offset3D vectorToPoint = tPoint - pointOnLine;
-            return pointOnLine - vectorToPoint;
+            symmetricPoint = pointOnLine - vectorToPoint;
         }
 
         /// <summary>
@@ -99,7 +100,8 @@ namespace Systems.Utilities.Math.Geometry3D
         /// </summary>
         /// <param name="plane">Plane to check for intersection with.</param>
         /// <returns><see langword="true"/> if the two shapes intersect, <see langword="false"/> otherwise.</returns>
-        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)] public bool Intersects(in Plane3D plane)
+        [BurstCompile]
+        public bool Intersects(in Plane3D plane)
         {
             // Check if the line is parallel to the plane
             float lowDet = math.dot((float3) plane.normal, (float3) direction);
@@ -114,7 +116,7 @@ namespace Systems.Utilities.Math.Geometry3D
         /// </summary>
         /// <param name="line">Line to check for intersection with.</param>
         /// <returns><see langword="true"/> if the two shapes intersect, <see langword="false"/> otherwise.</returns>
-        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [BurstCompile]
         public bool Intersects(in Line3D line)
         {
             float3 r = (float3) (point - line.point);
@@ -141,7 +143,7 @@ namespace Systems.Utilities.Math.Geometry3D
         /// </summary>
         /// <param name="plane">Plane to check for coincidence with.</param>
         /// <returns><see langword="true"/> if the two shapes are coincident, <see langword="false"/> otherwise.</returns>
-        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [BurstCompile]
         public bool IsCoincident(in Plane3D plane)
         {
             // If plane does not intersect, it is not coincident
@@ -156,7 +158,8 @@ namespace Systems.Utilities.Math.Geometry3D
         /// </summary>
         /// <param name="line">Line to check for collinearity with.</param>
         /// <returns><see langword="true"/> if the two lines are collinear, <see langword="false"/> otherwise.</returns>
-        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)] public bool IsCoincident(in Line3D line)
+        [BurstCompile]
+        public bool IsCoincident(in Line3D line)
         {
             float3 r = (float3) (point - line.point);
             float a = math.dot((float3) direction, (float3) direction);
@@ -182,10 +185,10 @@ namespace Systems.Utilities.Math.Geometry3D
         /// </summary>
         /// <param name="tPoint">Point to check for coincidence with.</param>
         /// <returns><see langword="true"/> if the two shapes are coincident, <see langword="false"/> otherwise.</returns>
-        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [BurstCompile]
         public bool IsCoincident(in Point3D tPoint)
         {
-            Point3D closestPoint = GetClosestPoint(tPoint);
+            GetClosestPoint(tPoint, out Point3D closestPoint);
             return Hint.Unlikely(Mathf.Approximately(closestPoint.X, tPoint.X) &&
                                  Mathf.Approximately(closestPoint.Y, tPoint.Y) &&
                                  Mathf.Approximately(closestPoint.Z, tPoint.Z));
