@@ -147,6 +147,9 @@ namespace Systems.Utilities.Indexing.Grid
         /// <summary>
         /// Converts 1D tile index back into relative 2D coordinates (x, y, z).
         /// </summary>
+        /// <remarks>
+        ///     The only faster way I know is to make this use sizes that are powers of 2
+        /// </remarks>
         [MethodImpl(MethodImplOptions.AggressiveInlining)] public static void FromIndexRelative(
             int index,
             in GridInfo2D gridInfo,
@@ -157,7 +160,7 @@ namespace Systems.Utilities.Indexing.Grid
 
             // Decode offsets
             x = index / sizeY;
-            y = index % sizeY;
+            y = index - x * sizeY;
         }
 
         public static implicit operator int(Index2D tileIndex) => tileIndex.value;
