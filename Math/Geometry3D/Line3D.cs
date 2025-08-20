@@ -200,16 +200,16 @@ namespace Systems.Utilities.Math.Geometry3D
         [MethodImpl(MethodImplOptions.AggressiveInlining)] public bool Equals(Line3D other)
             => vectorized.Equals(other.vectorized);
 
-        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)] public override bool Equals(object obj)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public override bool Equals(object obj)
             => obj is Line3D other && Equals(other);
 
-        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)] public override int GetHashCode()
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public override int GetHashCode()
             => vectorized.GetHashCode();
 
-        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(in Line3D left, in Line3D right) => left.Equals(right);
 
-        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(in Line3D left, in Line3D right) => !left.Equals(right);
 
 #endregion

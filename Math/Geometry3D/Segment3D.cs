@@ -64,7 +64,7 @@ namespace Systems.Utilities.Math.Geometry3D
         /// <remarks>
         ///     We simply mirror it using line as it will give us the same result.
         /// </remarks>
-        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void GetSymmetricPoint(in Point3D point, out Point3D symmetricPoint)
             => new Line3D(this).GetSymmetricPoint(point, out symmetricPoint);
 
@@ -73,7 +73,7 @@ namespace Systems.Utilities.Math.Geometry3D
         /// </summary>
         /// <param name="plane">Plane to check for intersection with.</param>
         /// <returns><see langword="true"/> if the two shapes intersect, <see langword="false"/> otherwise.</returns>
-        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)] public bool Intersects(in Plane3D plane)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public bool Intersects(in Plane3D plane)
             => !plane.ArePointsOnSameSide(start, end);
 
         /// <summary>
@@ -148,7 +148,7 @@ namespace Systems.Utilities.Math.Geometry3D
         ///     When whole line is coincident to plane then segment of this line is also coincident.
         ///     And when segment of this line is coincident to plane then whole line is also coincident.
         /// </remarks>
-        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool IsCoincident(in Plane3D plane) => new Line3D(this).IsCoincident(plane);
 
         /// <summary>
@@ -160,7 +160,7 @@ namespace Systems.Utilities.Math.Geometry3D
         ///     When whole line is coincident to line then segment of this line is also coincident.
         ///     And when segment of this line is coincident to line then whole line is also coincident.
         /// </remarks>
-        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)] public bool IsCoincident(in Line3D line)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public bool IsCoincident(in Line3D line)
             => new Line3D(this).IsCoincident(line);
 
         /// <summary>
@@ -181,14 +181,14 @@ namespace Systems.Utilities.Math.Geometry3D
         ///     Computes the length of the line segment.
         /// </summary>
         /// <returns>Length of the line segment.</returns>
-        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)] public float Length()
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public float Length()
             => math.distance((float3) start, (float3) end);
 
         /// <summary>
         ///     Computes the length of the line segment squared.
         /// </summary>
         /// <returns>Length of the line segment squared.</returns>
-        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)] public float LengthSq()
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public float LengthSq()
             => math.distancesq((float3) start, (float3) end);
 
 #region IEquatable<Line3D> - implemented
@@ -196,16 +196,16 @@ namespace Systems.Utilities.Math.Geometry3D
         [MethodImpl(MethodImplOptions.AggressiveInlining)] public bool Equals(Segment3D other)
             => vectorized.Equals(other.vectorized);
 
-        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)] public override bool Equals(object obj)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public override bool Equals(object obj)
             => obj is Segment3D other && Equals(other);
 
-        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)] public override int GetHashCode()
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public override int GetHashCode()
             => vectorized.GetHashCode();
 
-        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(in Segment3D left, in Segment3D right) => left.Equals(right);
 
-        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(in Segment3D left, in Segment3D right) => !left.Equals(right);
 
 #endregion

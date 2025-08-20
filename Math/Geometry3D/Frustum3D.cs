@@ -111,7 +111,7 @@ namespace Systems.Utilities.Math.Geometry3D
         /// </summary>
         /// <param name="point">The point to check.</param>
         /// <returns>True if the point is inside, false otherwise.</returns>
-        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool ContainsPoint(in Point3D point)
         {
             // Check for all planes

@@ -113,16 +113,16 @@ namespace Systems.Utilities.Math.Geometry3D
         [MethodImpl(MethodImplOptions.AggressiveInlining)] public bool Equals(Direction3D other)
             => _value.Equals(other._value);
 
-        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)] public override bool Equals(object obj)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public override bool Equals(object obj)
             => obj is Direction3D other && Equals(other);
 
-        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)] public override int GetHashCode()
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public override int GetHashCode()
             => _value.GetHashCode();
 
-        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(in Direction3D left, in Direction3D right) => left.Equals(right);
 
-        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(in Direction3D left, in Direction3D right) => !left.Equals(right);
 
 #endregion

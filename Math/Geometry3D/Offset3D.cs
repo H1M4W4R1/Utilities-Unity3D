@@ -151,16 +151,16 @@ namespace Systems.Utilities.Math.Geometry3D
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Equals(Offset3D other) => _value.Equals(other._value);
 
-        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override bool Equals(object obj) => obj is Offset3D other && Equals(other);
 
-        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override int GetHashCode() => _value.GetHashCode();
 
-        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(in Offset3D left, in Offset3D right) => left.Equals(right);
 
-        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(in Offset3D left, in Offset3D right) => !left.Equals(right);
 
 #endregion

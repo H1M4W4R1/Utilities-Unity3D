@@ -98,7 +98,7 @@ namespace Systems.Utilities.Math.Geometry3D
         /// <returns>
         ///     <see langword="true"/> if the point is on the positive side of the plane, <see langword="false"/> otherwise.
         /// </returns>
-        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool IsOnPositiveSide(in Point3D point) =>
             math.dot((float3) normal, (float3) point) + distance >= 0f;
 
@@ -106,7 +106,7 @@ namespace Systems.Utilities.Math.Geometry3D
         ///     Creates a new plane with the same normal vector but negative distance.
         /// </summary>
         /// <param name="flippedPlane">A new plane with the same normal vector but negative distance.</param>
-        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)] public void Flip(out Plane3D flippedPlane)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public void Flip(out Plane3D flippedPlane)
             => flippedPlane =new(-normal, -distance);
 
         /// <summary>
@@ -114,7 +114,7 @@ namespace Systems.Utilities.Math.Geometry3D
         /// </summary>
         /// <param name="translation">The amount to translate the plane by.</param>
         /// <param name="translatedPlane">A new plane that is translated by the given amount.</param>
-        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Translate(in Offset3D translation, out Plane3D translatedPlane)
             => translatedPlane = new(normal, distance + math.dot((float3) normal, (float3) translation));
 
@@ -124,7 +124,7 @@ namespace Systems.Utilities.Math.Geometry3D
         /// </summary>
         /// <param name="point">Target point to find the closest point from.</param>
         /// <param name="closestPoint">Closest point on the plane to the target.</param>
-        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void GetClosestPoint(in Point3D point, out Point3D closestPoint) =>
             closestPoint = point - normal * math.dot((float3) normal, (float3) point) +
             new Offset3D(distance, distance, distance);
@@ -134,7 +134,7 @@ namespace Systems.Utilities.Math.Geometry3D
         /// </summary>
         /// <param name="point">Target point to find the distance from.</param>
         /// <returns>Distance from the target point to the plane.</returns>
-        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public float DistanceToPoint(in Point3D point)
             => math.dot((float3) normal, (float3) point) + distance;
 
@@ -146,7 +146,7 @@ namespace Systems.Utilities.Math.Geometry3D
         /// <returns>
         ///     <see langword="true"/> if both points are on the same side of the plane, <see langword="false"/> otherwise.
         /// </returns>
-        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool ArePointsOnSameSide(in Point3D a, in Point3D b)
         {
             float distA = DistanceToPoint(a);
@@ -226,18 +226,18 @@ namespace Systems.Utilities.Math.Geometry3D
         public bool Equals(Plane3D other)
             => vectorized.Equals(other.vectorized);
 
-        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override bool Equals(object obj)
             => obj is Plane3D other && Equals(other);
 
-        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override int GetHashCode()
             => vectorized.GetHashCode();
 
-        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(in Plane3D left, in Plane3D right) => left.Equals(right);
 
-        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(in Plane3D left, in Plane3D right) => !left.Equals(right);
 
 #endregion

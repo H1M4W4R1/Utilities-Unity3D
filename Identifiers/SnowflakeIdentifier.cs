@@ -39,7 +39,7 @@ namespace Systems.Utilities.Identifiers
         /// </summary>
         public bool IsCreated
         {
-            [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)] get => ticks != 0;
+            [MethodImpl(MethodImplOptions.AggressiveInlining)] get => ticks != 0;
         }
 
         /// <summary>
@@ -64,23 +64,23 @@ namespace Systems.Utilities.Identifiers
 
 #region IEquatable<SnowflakeIdentifier> - implemented
 
-        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Equals(SnowflakeIdentifier other) => vectorized.Equals(other.vectorized);
 
-        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)] public override bool Equals(object obj)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public override bool Equals(object obj)
         {
             if (obj is SnowflakeIdentifier other) return Equals(other);
             if (obj is null) return !IsCreated;
             return false;
         }
 
-        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)] public override int GetHashCode()
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public override int GetHashCode()
             => vectorized.GetHashCode();
 
-        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(SnowflakeIdentifier left, SnowflakeIdentifier right) => left.Equals(right);
 
-        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(SnowflakeIdentifier left, SnowflakeIdentifier right) => !left.Equals(right);
 
 #endregion

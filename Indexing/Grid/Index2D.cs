@@ -45,7 +45,7 @@ namespace Systems.Utilities.Indexing.Grid
         /// <summary>
         ///     Get tilemap position from this index
         /// </summary>
-        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int2 GetAbsolutePosition(in GridInfo2D gridInfo)
         {
             FromIndexAbsolute(value, gridInfo, out int2 result);
@@ -55,7 +55,7 @@ namespace Systems.Utilities.Indexing.Grid
         /// <summary>
         ///     Get world location of this tile
         /// </summary>
-        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)] public float2
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public float2
             GetWorldPosition(in GridInfo2D gridInfo)
         {
             // Convert back into tilemap position
@@ -70,7 +70,7 @@ namespace Systems.Utilities.Indexing.Grid
         /// Converts 2D coordinates (x, y, z) into a 1D tile index.
         /// Uses absolute coordinates of a tile
         /// </summary>
-        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int ToIndexAbsolute(in int2 tilePosition, in GridInfo2D gridInfo) =>
             ToIndexAbsolute(tilePosition.x, tilePosition.y, gridInfo);
 
@@ -78,7 +78,7 @@ namespace Systems.Utilities.Indexing.Grid
         /// Converts 2D coordinates (x, y, z) into a 1D tile index.
         /// Uses absolute coordinates of a tile
         /// </summary>
-        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int ToIndexAbsolute(int x, int y, in GridInfo2D gridInfo)
         {
             // Compute real tilemap offset, we subtract origin point
@@ -92,7 +92,7 @@ namespace Systems.Utilities.Indexing.Grid
         /// Converts 2D coordinates (x, y, z) into a 1D tile index.
         /// Uses relative coordinates of a tile
         /// </summary>
-        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int ToIndexRelative(int x, int y, in GridInfo2D gridInfo)
             => ToIndexRelative(new int2(x, y), gridInfo);
 
@@ -100,14 +100,14 @@ namespace Systems.Utilities.Indexing.Grid
         /// Converts 2D coordinates (x, y, z) into a 1D tile index.
         /// Uses relative coordinates of a tile
         /// </summary>
-        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int ToIndexRelative(in int2 tileOffset, in GridInfo2D gridInfo)
             => (tileOffset.x * gridInfo.size.y) + tileOffset.y;
 
         /// <summary>
         /// Converts 1D tile index back into absolute 2D coordinates (x, y, z).
         /// </summary>
-        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void FromIndexAbsolute(int index, in GridInfo2D gridInfo, out int2 tilePosition)
         {
             FromIndexAbsolute(index, gridInfo, out int x, out int y);
@@ -119,7 +119,7 @@ namespace Systems.Utilities.Indexing.Grid
         /// <summary>
         /// Converts 1D tile index back into absolute 2D coordinates (x, y, z).
         /// </summary>
-        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)] public static void FromIndexAbsolute(
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static void FromIndexAbsolute(
             int index,
             in GridInfo2D gridInfo,
             out int x,
@@ -135,7 +135,7 @@ namespace Systems.Utilities.Indexing.Grid
         /// <summary>
         /// Converts 1D tile index back into relative 2D coordinates (x, y, z).
         /// </summary>
-        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)] public static void FromIndexRelative(
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static void FromIndexRelative(
             int index,
             in GridInfo2D gridInfo,
             out int2 tileOffset)
@@ -147,7 +147,7 @@ namespace Systems.Utilities.Indexing.Grid
         /// <summary>
         /// Converts 1D tile index back into relative 2D coordinates (x, y, z).
         /// </summary>
-        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)] public static void FromIndexRelative(
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static void FromIndexRelative(
             int index,
             in GridInfo2D gridInfo,
             out int x,
@@ -164,39 +164,39 @@ namespace Systems.Utilities.Indexing.Grid
 
 #region NEIGHBORS
 
-        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int GetNorthIndex2D(in GridInfo2D gridInfo)
             => GetNeighborIndex2D(0, +1, gridInfo);
 
-        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int GetSouthIndex2D(in GridInfo2D gridInfo)
             => GetNeighborIndex2D(0, -1, gridInfo);
 
-        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int GetEastIndex2D(in GridInfo2D gridInfo)
             => GetNeighborIndex2D(+1, 0, gridInfo);
 
-        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int GetWestIndex2D(in GridInfo2D gridInfo)
             => GetNeighborIndex2D(-1, 0, gridInfo);
 
-        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int GetNorthEastIndex2D(in GridInfo2D gridInfo)
             => GetNeighborIndex2D(+1, +1, gridInfo);
 
-        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int GetNorthWestIndex2D(in GridInfo2D gridInfo)
             => GetNeighborIndex2D(-1, +1, gridInfo);
 
-        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int GetSouthEastIndex2D(in GridInfo2D gridInfo)
             => GetNeighborIndex2D(+1, -1, gridInfo);
 
-        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int GetSouthWestIndex2D(in GridInfo2D gridInfo)
             => GetNeighborIndex2D(-1, -1, gridInfo);
 
-        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private int GetNeighborIndex2D(int dx, int dy, in GridInfo2D gridInfo)
         {
             FromIndexRelative(value, gridInfo, out int x, out int y);

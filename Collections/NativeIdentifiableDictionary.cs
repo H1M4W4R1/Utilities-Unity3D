@@ -28,7 +28,7 @@ namespace Systems.Utilities.Collections
 
         public int Count
         {
-            [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)] get
+            [MethodImpl(MethodImplOptions.AggressiveInlining)] get
                 => math.min(_keys.Length, _values.Length);
         }
 
@@ -42,20 +42,20 @@ namespace Systems.Utilities.Collections
             _values = new UnsafeList<TObject>(64, allocator);
         }
 
-        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)] public void Dispose()
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public void Dispose()
         {
             _keys.Dispose();
             _values.Dispose();
         }
 
-        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public JobHandle Dispose(JobHandle inputDeps)
         {
             Dispose();
             return inputDeps;
         }
 
-        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public IEnumerator<KeyValuePair<TIdentifier, TObject>> GetEnumerator()
         {
             Assert.AreEqual(_keys.Length, _values.Length);
@@ -65,7 +65,7 @@ namespace Systems.Utilities.Collections
             }
         }
 
-        [BurstCompile] [MethodImpl(MethodImplOptions.AggressiveInlining)] IEnumerator IEnumerable.GetEnumerator()
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] IEnumerator IEnumerable.GetEnumerator()
             => GetEnumerator();
 
 
